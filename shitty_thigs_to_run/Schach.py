@@ -23,17 +23,26 @@ def display_gameboard():
 
 def checkmove(startrow, startcolum, finishrow, finishcolum):
     global player
-    gamepice = gameboard[startrow][startcolum]
-    movetogamepice = gameboard[finishrow][finishcolum]
+    gamepiece = gameboard[startrow][startcolum]
+    movetogamepiece = gameboard[finishrow][finishcolum]
+    gamepiceaffiliation = list(gamepiece)
+    movetogamepiceaffiliation = list(movetogamepiece)
+
+    if gamepiceaffiliation[1] == movetogamepiceaffiliation[1]:                                                          # check if the number of the game pieces are the same
+        print('you can\'t remove your own game pieces try something else!')                                             # prevent the player from removing their own game pieces
+        player = 1 - player
+        return
+
+
 
     # -----------------pawn-player-1--------------
-    if gamepice == 'P1' and startrow - finishrow == 1 and startcolum - finishcolum == 0 and movetogamepice == '00':
-        move(startrow, startcolum, finishrow, finishcolum, gamepice)
-    elif gamepice == 'P1' and startrow - finishrow == 1 and abs(
-            startcolum - finishcolum) == 1 and movetogamepice != '00':
-        move(startrow, startcolum, finishrow, finishcolum, gamepice)
+    if gamepiece == 'P1' and startrow - finishrow == 1 and startcolum - finishcolum == 0 and movetogamepiece == '00':
+        move(startrow, startcolum, finishrow, finishcolum, gamepiece)
+    elif gamepiece == 'P1' and startrow - finishrow == 1 and abs(
+            startcolum - finishcolum) == 1 and movetogamepiece != '00':
+        move(startrow, startcolum, finishrow, finishcolum, gamepiece)
     # -----------------tower-player-1-------------
-    if (gamepice == 'T1' or gamepice == 'T2') and (startrow - finishrow == 0 or startcolum - finishcolum == 0):         #check if tower moves straight
+    if (gamepiece == 'T1' or gamepiece == 'T2') and (startrow - finishrow == 0 or startcolum - finishcolum == 0):         #check if tower moves straight
         something_in_the_way = False
         if startrow - finishrow == 0:                                                                                   #check if move is horisontal
             for colums in range(abs(startcolum - finishcolum)):                                                         #check if the move isn't blocked
@@ -44,7 +53,7 @@ def checkmove(startrow, startcolum, finishrow, finishcolum):
                     if gameboard[startrow][startcolum + colums] != '00' and startcolum + colums != startcolum:
                         something_in_the_way = move_blocked(something_in_the_way)
             if not something_in_the_way:
-                move(startrow, startcolum, finishrow, finishcolum, gamepice)
+                move(startrow, startcolum, finishrow, finishcolum, gamepiece)
 
         if startcolum - finishcolum == 0:                                                                               #check if move is vertical
             for rows in range(abs(startrow - finishrow)):                                                               #check if the move isn't blocked
@@ -55,7 +64,7 @@ def checkmove(startrow, startcolum, finishrow, finishcolum):
                     if gameboard[startrow + rows][startcolum] != '00' and startrow + rows != startrow:
                         something_in_the_way = move_blocked(something_in_the_way)
             if not something_in_the_way:
-                move(startrow, startcolum, finishrow, finishcolum, gamepice)
+                move(startrow, startcolum, finishrow, finishcolum, gamepiece)
 
 
     else:
