@@ -1,11 +1,11 @@
-gameboard = [['T2', 'H2', '00', '00', '00', '00', 'H2', 'T2'],
+gameboard = [['T2', 'k2', '00', '00', '00', '00', 'k2', 'T2'],
              ['P2', 'P2', 'P2', 'P2', 'P2', 'P2', 'P2', 'P2'],
              ['00', '00', '00', '00', '00', '00', '00', '00'],
              ['00', '00', '00', '00', '00', '00', '00', '00'],
              ['00', '00', '00', '00', '00', '00', '00', '00'],
              ['00', '00', '00', '00', '00', '00', '00', '00'],
              ['P1', 'P1', 'P1', 'P1', 'P1', 'P1', 'P1', 'P1'],
-             ['T1', 'H1', '00', '00', '00', '00', 'H1', 'T1']]
+             ['T1', 'k1', '00', '00', '00', '00', 'k1', 'T1']]
 
 
 def display_gameboard():
@@ -41,7 +41,7 @@ def checkmove(startrow, startcolum, finishrow, finishcolum):
     elif gamepiece == 'P1' and startrow - finishrow == 1 and abs(
             startcolum - finishcolum) == 1 and movetogamepiece != '00':
         move(startrow, startcolum, finishrow, finishcolum, gamepiece)
-    # -----------------tower--------------------------
+    # -----------------tower-----------------------
     if (gamepiece == 'T1' or gamepiece == 'T2') and (startrow - finishrow == 0 or startcolum - finishcolum == 0):       #check if tower moves straight
         something_in_the_way = False
         if startrow - finishrow == 0:                                                                                   #check if move is horisontal
@@ -66,9 +66,11 @@ def checkmove(startrow, startcolum, finishrow, finishcolum):
             if not something_in_the_way:
                 move(startrow, startcolum, finishrow, finishcolum, gamepiece)
     #------------------kight-----------------------------
-    if (gamepiece == 'H1' or gamepiece == 'H2') and (abs(startrow - finishrow == 2) and
-        abs(startcolum - finishcolum == 1)) or (abs(startrow - finishrow == 1) and abs(startcolum - finishcolum == 2)):
-        move(startrow, startcolum, finishrow, finishcolum, gamepiece)
+    if gamepiece == 'k1' or gamepiece == 'k2':
+        if abs(startrow - finishrow) == 2 and abs(startcolum - finishcolum) == 1:                                       #check if the move is valid
+            move(startrow, startcolum, finishrow, finishcolum, gamepiece)                                               #takes absolute amount check for both sides
+        elif abs(startrow - finishrow) == 1 and abs(startcolum - finishcolum) == 2:
+            move(startrow, startcolum, finishrow, finishcolum, gamepiece)
 
 
 
