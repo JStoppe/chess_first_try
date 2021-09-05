@@ -1,11 +1,11 @@
-gameboard = [['T2', 'k2', 'B2', '00', '00', 'B2', 'k2', 'T2'],
+gameboard = [['T2', 'k2', 'B2', 'Q2', 'K2', 'B2', 'k2', 'T2'],
              ['P2', 'P2', 'P2', 'P2', 'P2', 'P2', 'P2', 'P2'],
              ['00', '00', '00', '00', '00', '00', '00', '00'],
              ['00', '00', '00', '00', '00', '00', '00', '00'],
              ['00', '00', '00', '00', '00', '00', '00', '00'],
              ['00', '00', '00', '00', '00', '00', '00', '00'],
              ['P1', 'P1', 'P1', 'P1', 'P1', 'P1', 'P1', 'P1'],
-             ['T1', 'k1', 'B1', '00', '00', 'B1', 'k1', 'T1']]
+             ['T1', 'k1', 'B1', 'Q1', 'K1', 'B1', 'k1', 'T1']]
 
 
 def display_gameboard():
@@ -28,79 +28,51 @@ def checkmove(startrow, startcolum, finishrow, finishcolum):
     gamepiceaffiliation = list(gamepiece)
     movetogamepiceaffiliation = list(movetogamepiece)
 
-    if gamepiceaffiliation[1] == movetogamepiceaffiliation[1]:                                                          # check if the number of the game pieces are the same
-        print('you can\'t remove your own game pieces try something else!')                                             # prevent the player from removing their own game pieces
+    if gamepiceaffiliation[1] == movetogamepiceaffiliation[1]:  # check if the number of the game pieces are the same
+        print(
+            'you can\'t remove your own game pieces try something else!')  # prevent the player from removing their own game pieces
         player = 1 - player
         return
 
+    # -----------------pawn-player----------------
+    if gamepiece == 'P1':
+        x = 1
+    elif gamepiece == 'P2':
+        x = -1
 
-
-    # -----------------pawn-player-1--------------
-    if gamepiece == 'P1' and startrow - finishrow == 1 and startcolum - finishcolum == 0 and movetogamepiece == '00':
+    if startrow - finishrow == x and startcolum - finishcolum == 0 and movetogamepiece == '00':
         move(startrow, startcolum, finishrow, finishcolum, gamepiece)
-    elif gamepiece == 'P1' and startrow - finishrow == 1 and abs(
-            startcolum - finishcolum) == 1 and movetogamepiece != '00':
+    elif startrow - finishrow == x and abs(
+            startcolum - finishcolum) == x and movetogamepiece != '00':
         move(startrow, startcolum, finishrow, finishcolum, gamepiece)
     # -----------------tower-----------------------
-    if (gamepiece == 'T1' or gamepiece == 'T2') and (startrow - finishrow == 0 or startcolum - finishcolum == 0):       #check if tower moves straight
+    if (gamepiece == 'T1' or gamepiece == 'T2') and (
+            startrow - finishrow == 0 or startcolum - finishcolum == 0):  # check if tower moves straight
         something_in_the_way = False
-        if startrow - finishrow == 0:                                                                                   #check if move is horisontal
-            for colums in range(abs(startcolum - finishcolum)):                                                         #check if the move isn't blocked
-                if startcolum - finishcolum > 0:
-                    if gameboard[startrow][startcolum - colums] != '00' and startcolum + colums != startcolum:
-                        something_in_the_way = move_blocked(something_in_the_way)
-                elif startcolum - finishcolum < 0:
-                    if gameboard[startrow][startcolum + colums] != '00' and startcolum + colums != startcolum:
-                        something_in_the_way = move_blocked(something_in_the_way)
-            if not something_in_the_way:
-                move(startrow, startcolum, finishrow, finishcolum, gamepiece)
-
-        if startcolum - finishcolum == 0:                                                                               #check if move is vertical
-            for rows in range(abs(startrow - finishrow)):                                                               #check if the move isn't blocked
-                if startrow - finishrow > 0:
-                    if gameboard[startrow - rows][startcolum] != '00' and startrow + rows != startrow:
-                        something_in_the_way = move_blocked(something_in_the_way)
-                elif startrow - finishrow < 0:
-                    if gameboard[startrow + rows][startcolum] != '00' and startrow + rows != startrow:
-                        something_in_the_way = move_blocked(something_in_the_way)
-            if not something_in_the_way:
-                move(startrow, startcolum, finishrow, finishcolum, gamepiece)
-    #------------------kight-----------------------------
+        check_straight_blocked(startrow, startcolum, finishrow, finishcolum, gamepiece, something_in_the_way)
+    # ------------------kight-----------------------------
     if gamepiece == 'k1' or gamepiece == 'k2':
-        if abs(startrow - finishrow) == 2 and abs(startcolum - finishcolum) == 1:                                       #check if the move is valid
-            move(startrow, startcolum, finishrow, finishcolum, gamepiece)                                               #takes absolute amount check for both sides
+        if abs(startrow - finishrow) == 2 and abs(startcolum - finishcolum) == 1:  # check if the move is valid
+            move(startrow, startcolum, finishrow, finishcolum, gamepiece)  # takes absolute amount check for both sides
         elif abs(startrow - finishrow) == 1 and abs(startcolum - finishcolum) == 2:
             move(startrow, startcolum, finishrow, finishcolum, gamepiece)
-    #------------------bishop------------------------------------
-    if gamepiece == "B1" or "B2" and abs(startrow-finishrow)-abs(startcolum-finishcolum)==0:                            #checks if bishop is moved and if the move is diagonal
+    # ------------------bishop------------------------------------
+    if gamepiece == "B1" or "B2" and abs(startrow - finishrow) - abs(
+            startcolum - finishcolum) == 0:  # checks if bishop is moved and if the move is diagonal
         something_in_the_way = False
+        check_diagonal_blocked(startrow, startcolum, finishrow, finishcolum, gamepiece, something_in_the_way)
 
-        if startrow - finishrow > 0 and startcolum - finishcolum < 0:                                                   #checks path clear right top
-            for steps in range(abs(startrow - finishrow)):
-                if steps != 0:
-                    if gameboard[startrow-steps][startcolum+steps] != '00':
-                        something_in_the_way = move_blocked(something_in_the_way)
+    # ------------------king---------------------------------------
+    if (gamepiece == 'K1' or 'K2') and startcolum - finishcolum < 2 and startrow - finishrow < 2:
+        move(startrow, startcolum, finishrow, finishcolum, gamepiece)
 
-        elif startrow - finishrow > 0 and startcolum - finishcolum > 0:                                                 #checks path clear left top
-            for steps in range(abs(startrow - finishrow)):
-                if steps != 0:
-                    if gameboard[startrow-steps][startcolum-steps] != '00':
-                        something_in_the_way = move_blocked(something_in_the_way)
+    # ------------------Queen---------------------------------------
+    if (gamepiece == 'Q1' or 'Q2') and ((startrow - finishrow == 0 or startcolum - finishcolum == 0)
+                                        or abs(startrow - finishrow) - abs(startcolum - finishcolum) == 0):
+        something_in_the_way = False
+        check_straight_blocked(startrow, startcolum, finishrow, finishcolum, gamepiece, something_in_the_way)
+        check_diagonal_blocked(startrow, startcolum, finishrow, finishcolum, gamepiece, something_in_the_way)
 
-        elif startrow - finishrow < 0 and startcolum - finishcolum < 0:                                                 #checks path clear right bottom
-            for steps in range(abs(startrow - finishrow)):
-                if steps != 0:
-                    if gameboard[startrow+steps][startcolum+steps] != '00':
-                        something_in_the_way = move_blocked(something_in_the_way)
-
-        elif startrow - finishrow < 0 and startcolum - finishcolum > 0:                                                 #checks path clear right bottom
-            for steps in range(abs(startrow - finishrow)):
-                if steps != 0:
-                    if gameboard[startrow + steps][startcolum - steps] != '00':
-                        something_in_the_way = move_blocked(something_in_the_way)
-
-        if not something_in_the_way:
-            move(startrow, startcolum, finishrow, finishcolum, gamepiece)
 
     else:
         print('you can\'t move like that!')
@@ -108,8 +80,61 @@ def checkmove(startrow, startcolum, finishrow, finishcolum):
     player = 1 - player
 
 
-def move(startrow, startcolum, finishrow, finishcolum, gamepice):
-    gameboard[finishrow][finishcolum] = gamepice
+def check_straight_blocked(startrow, startcolum, finishrow, finishcolum, gamepiece, something_in_the_way):
+    if startrow - finishrow == 0:  # check if move is horizontal
+        for colums in range(abs(startcolum - finishcolum)):  # check if the move isn't blocked
+            if startcolum - finishcolum > 0:
+                if gameboard[startrow][startcolum - colums] != '00' and startcolum + colums != startcolum:
+                    something_in_the_way = move_blocked(something_in_the_way)
+            elif startcolum - finishcolum < 0:
+                if gameboard[startrow][startcolum + colums] != '00' and startcolum + colums != startcolum:
+                    something_in_the_way = move_blocked(something_in_the_way)
+        if not something_in_the_way:
+            move(startrow, startcolum, finishrow, finishcolum, gamepiece)
+
+    if startcolum - finishcolum == 0:  # check if move is vertical
+        for rows in range(abs(startrow - finishrow)):  # check if the move isn't blocked
+            if startrow - finishrow > 0:
+                if gameboard[startrow - rows][startcolum] != '00' and startrow + rows != startrow:
+                    something_in_the_way = move_blocked(something_in_the_way)
+            elif startrow - finishrow < 0:
+                if gameboard[startrow + rows][startcolum] != '00' and startrow + rows != startrow:
+                    something_in_the_way = move_blocked(something_in_the_way)
+    if not something_in_the_way:
+        move(startrow, startcolum, finishrow, finishcolum, gamepiece)
+
+
+def check_diagonal_blocked(startrow, startcolum, finishrow, finishcolum, gamepiece, something_in_the_way):
+    if startrow - finishrow > 0 and startcolum - finishcolum < 0:  # checks path clear right top
+        for steps in range(abs(startrow - finishrow)):
+            if steps != 0:
+                if gameboard[startrow - steps][startcolum + steps] != '00':
+                    something_in_the_way = move_blocked(something_in_the_way)
+
+    elif startrow - finishrow > 0 and startcolum - finishcolum > 0:  # checks path clear left top
+        for steps in range(abs(startrow - finishrow)):
+            if steps != 0:
+                if gameboard[startrow - steps][startcolum - steps] != '00':
+                    something_in_the_way = move_blocked(something_in_the_way)
+
+    elif startrow - finishrow < 0 and startcolum - finishcolum < 0:  # checks path clear right bottom
+        for steps in range(abs(startrow - finishrow)):
+            if steps != 0:
+                if gameboard[startrow + steps][startcolum + steps] != '00':
+                    something_in_the_way = move_blocked(something_in_the_way)
+
+    elif startrow - finishrow < 0 and startcolum - finishcolum > 0:  # checks path clear right bottom
+        for steps in range(abs(startrow - finishrow)):
+            if steps != 0:
+                if gameboard[startrow + steps][startcolum - steps] != '00':
+                    something_in_the_way = move_blocked(something_in_the_way)
+
+    if not something_in_the_way:
+        move(startrow, startcolum, finishrow, finishcolum, gamepiece)
+
+
+def move(startrow, startcolum, finishrow, finishcolum, gamepiece):
+    gameboard[finishrow][finishcolum] = gamepiece
     gameboard[startrow][startcolum] = '00'
     display_gameboard()
 
@@ -119,7 +144,7 @@ def move_blocked(something_in_the_way):
     print('something is in the way!')
     player = 1 - player
     something_in_the_way = True
-    return(something_in_the_way)
+    return (something_in_the_way)
 
 
 def player_move():
