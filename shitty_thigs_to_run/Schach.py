@@ -34,46 +34,49 @@ def checkmove(startrow, startcolum, finishrow, finishcolum):
         player = 1 - player
         return
 
-    # -----------------pawn-player----------------
+    # -----------------pawn------------------------
     if gamepiece == 'P1':
         x = 1
-    elif gamepiece == 'P2':
+        y = 6
+        z = 2
+    if gamepiece == 'P2':
         x = -1
-
-    if startrow - finishrow == x and startcolum - finishcolum == 0 and movetogamepiece == '00':
+        y = 1
+        z = -2
+    if startrow == y and startrow - finishrow == z and startcolum - finishcolum == 0 and movetogamepiece == '00':
+        move(startrow, startcolum, finishrow, finishcolum, gamepiece)
+    elif startrow - finishrow == x and startcolum - finishcolum == 0 and movetogamepiece == '00':
         move(startrow, startcolum, finishrow, finishcolum, gamepiece)
     elif startrow - finishrow == x and abs(
-            startcolum - finishcolum) == x and movetogamepiece != '00':
+            startcolum - finishcolum) == 1 and movetogamepiece != '00':
         move(startrow, startcolum, finishrow, finishcolum, gamepiece)
     # -----------------tower-----------------------
-    if (gamepiece == 'T1' or gamepiece == 'T2') and (
+    elif (gamepiece == 'T1' or gamepiece == 'T2') and (
             startrow - finishrow == 0 or startcolum - finishcolum == 0):  # check if tower moves straight
         something_in_the_way = False
         check_straight_blocked(startrow, startcolum, finishrow, finishcolum, gamepiece, something_in_the_way)
     # ------------------kight-----------------------------
-    if gamepiece == 'k1' or gamepiece == 'k2':
+    elif gamepiece == 'k1' or gamepiece == 'k2':
         if abs(startrow - finishrow) == 2 and abs(startcolum - finishcolum) == 1:  # check if the move is valid
             move(startrow, startcolum, finishrow, finishcolum, gamepiece)  # takes absolute amount check for both sides
         elif abs(startrow - finishrow) == 1 and abs(startcolum - finishcolum) == 2:
             move(startrow, startcolum, finishrow, finishcolum, gamepiece)
     # ------------------bishop------------------------------------
-    if gamepiece == "B1" or "B2" and abs(startrow - finishrow) - abs(
+    elif (gamepiece in ("B1", "B2")) and abs(startrow - finishrow) - abs(
             startcolum - finishcolum) == 0:  # checks if bishop is moved and if the move is diagonal
         something_in_the_way = False
         check_diagonal_blocked(startrow, startcolum, finishrow, finishcolum, gamepiece, something_in_the_way)
 
     # ------------------king---------------------------------------
-    if (gamepiece == 'K1' or 'K2') and startcolum - finishcolum < 2 and startrow - finishrow < 2:
+    elif (gamepiece in ('K1', 'K2')) and startcolum - finishcolum < 2 and startrow - finishrow < 2:
         move(startrow, startcolum, finishrow, finishcolum, gamepiece)
 
     # ------------------Queen---------------------------------------
-    if (gamepiece == 'Q1' or 'Q2') and ((startrow - finishrow == 0 or startcolum - finishcolum == 0)
+    elif (gamepiece in ('Q1', 'Q2')) and ((startrow - finishrow == 0 or startcolum - finishcolum == 0)
                                         or abs(startrow - finishrow) - abs(startcolum - finishcolum) == 0):
         something_in_the_way = False
         check_straight_blocked(startrow, startcolum, finishrow, finishcolum, gamepiece, something_in_the_way)
         check_diagonal_blocked(startrow, startcolum, finishrow, finishcolum, gamepiece, something_in_the_way)
-
-
     else:
         print('you can\'t move like that!')
         player = 1 - player
